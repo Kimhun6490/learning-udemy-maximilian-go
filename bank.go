@@ -2,14 +2,18 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"strconv"
+
+	"example.com/bank/fileops"
+	"github.com/Pallinder/go-randomdata"
 )
 
+const balanceFileName = "balance.txt"
+
 func main() {
-	var accountBalance float64 = readBalanceFromFile()
+	var accountBalance float64 = fileops.GetFloatFromFile(balanceFileName)
 
 	fmt.Println("Welcome to Go Bank!")
+	fmt.Println("Reach us 24/7", randomdata.PhoneNumber())
 
 	showMenu(&accountBalance)
 
@@ -18,11 +22,7 @@ func main() {
 
 func showMenu(accountBalance *float64) {
 	for {
-		fmt.Println("What do you want to do?")
-		fmt.Println("1. Check balance")
-		fmt.Println("2. Deposit money")
-		fmt.Println("3. Withdraw money")
-		fmt.Println("4. Exit")
+		presentOptions()
 
 		var choice int
 		fmt.Scanln(&choice)
@@ -53,7 +53,7 @@ func depositMoney(accountBalance *float64) {
 	fmt.Scanln(&amount)
 	*accountBalance += amount
 	fmt.Printf("$%.2f has been deposited to your account.\n", amount)
-	writeBalanceToFile(accountBalance)
+	fileops.WriteFloatToFile(balanceFileName, *accountBalance)
 }
 
 func withdrawMoney(accountBalance *float64) {
@@ -69,33 +69,6 @@ func withdrawMoney(accountBalance *float64) {
 	} else {
 		*accountBalance -= amount
 		fmt.Printf("$%.2f has been withdrawn from your account.\n", amount)
-		writeBalanceToFile(accountBalance)
+		fileops.WriteFloatToFile(balanceFileName, *accountBalance)
 	}
-}
-
-func writeBalanceToFile(accountBalance *float64) {
-	balanceStr := fmt.Sprintf("%.2f", *accountBalance)
-
-	// 0644 = owner can read/write, group can read, others can read
-	os.WriteFile("balance.txt", []byte(balanceStr), 0644)
-}
-
-func readBalanceFromFile() float64 {
-	data, err := os.ReadFile("balance.txt")
-	if err != nil {
-		fmt.Println("Error reading balance from file:", err)
-		return 0
-	}
-
-	// var balance float64
-	// fmt.Sscanf(string(data), "%f", &balance)
-	// return balance
-
-	balanceStr := string(data)
-	balance, err := strconv.ParseFloat(balanceStr, 64)
-	if err != nil {
-		fmt.Println("Error parsing balance:", err)
-		return 0
-	}
-	return balance
 }
