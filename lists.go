@@ -25,4 +25,8 @@ func main() {
 	var productNames []string = []string{"Laptop", "Smartphone", "Tablet"}
 	productNames = append(productNames, "Smartwatch", "Headphones")
 	fmt.Println(productNames)
+
+	discountedPrices := []float64{9.99, 14.99, 19.99}
+	anotherPrices := append(prices[1:], discountedPrices...)
+	fmt.Println(anotherPrices)
 }
