@@ -3,24 +3,15 @@ package main
 import "fmt"
 
 func main() {
-	fact := factorial(5)
-	fmt.Printf("Factorial of 5 is: %d\n", fact)
+	numbers := []int{1, 2, 3, 4, 5}
+	total := sumup(numbers...)
+	fmt.Println("The sum is:", total)
 }
 
-// Recursion
-func factorial(n int) int {
-	if n == 0 {
-		return 1
+func sumup(numbers ...int) int {
+	total := 0
+	for _, number := range numbers {
+		total += number
 	}
-	return n * factorial(n-1)
+	return total
 }
-
-// func factorial(n int) int {
-// 	result := 1
-
-// 	for i := 1; i <= n; i++ {
-// 		result *= i
-// 	}
-
-// 	return result
-// }
