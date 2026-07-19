@@ -31,10 +31,14 @@ func (job *TaxIncludedPriceJob) LoadData() error {
 	return nil
 }
 
-func (job *TaxIncludedPriceJob) Calculate() error {
+func (job *TaxIncludedPriceJob) Calculate(done chan bool, errorChan chan error) {
+	// errorChan <- errors.New("not implemented yet")
+
 	err := job.LoadData()
 	if err != nil {
-		return err
+		fmt.Println("Error loading data:", err)
+		errorChan <- err
+		return
 	}
 
 	result := make(map[string]string)
@@ -54,11 +58,11 @@ func (job *TaxIncludedPriceJob) Calculate() error {
 	err = job.IOManager.WriteLinesToFile(job)
 	if err != nil {
 		fmt.Println("Error writing to file:", err)
-		return err
 	}
 
 	fmt.Printf("Tax-included prices saved to %s\n", fileName)
-	return nil
+
+	done <- true
 }
 
 func NewTaxIncludedPriceJob(ioManager iomanager.IOManager, taxRate float64) *TaxIncludedPriceJob {
